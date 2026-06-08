@@ -1,0 +1,26 @@
+
+services:
+  sankarnethralaya-backend:
+    build:
+      context: "."
+      dockerfile: "Dockerfile"
+    restart: always
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    depends_on:
+    - sankarnethralaya-db
+
+  sankarnethralaya-db:
+    image: mysql:8.0
+    ports:
+    - "3307:3306"
+    restart: always
+    env_file:
+          - .env
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
