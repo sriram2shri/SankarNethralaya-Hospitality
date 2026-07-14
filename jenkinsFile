@@ -1,0 +1,62 @@
+pipeline {
+    agent any
+
+    tools {
+        jdk 'JDK26'
+        maven 'Maven3'
+    }
+
+    stages {
+
+        stage('Checkout Source Code') {
+            steps {
+                git branch: 'main',
+                url: 'https://github.com/sriram2shri/SankarNethralaya-Hospitality.git'
+            }
+        }
+
+        stage('Clean') {
+            steps {
+                sh 'mvn clean'
+            }
+        }
+
+        stage('Compile') {
+            steps {
+                sh 'mvn compile'
+            }
+        }
+
+        stage('Run Unit Tests') {
+            steps {
+                sh 'mvn test'
+            }
+        }
+
+        stage('Package Application') {
+            steps {
+                sh 'mvn package'
+            }
+        }
+
+        stage('Archive Artifacts') {
+            steps {
+                archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Pipeline Execution Completed.'
+        }
+
+        success {
+            echo 'Build Successful!'
+        }
+
+        failure {
+            echo 'Build Failed!'
+        }
+    }
+}
